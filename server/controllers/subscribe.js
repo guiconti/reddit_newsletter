@@ -1,8 +1,9 @@
 /**
- * Módulo para observar um subreddit para um canal
- * @module bot/reddit/subscribeToSubreddit
+ * Module to subscribe a chat id to a subreddit
+ * @module controllers/subscribe
  */
 const _ = require('underscore');
+const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
 const getPosts = require('./getPosts');
@@ -14,9 +15,8 @@ let savedPosts = [];
  * Subscribe an endpoint to a new subreddit
  *
  * @param {string} req.body.subreddit - Subreddit name
- * @param {integer} req.body.chatId - Telegram chat id TODO: Encapsulate this in an api key
- * @return {Promise.NULL} - Uma promise que resolve caso o timer seja inserido
- * @throws {Error} - Rejeita a promise com o erro ocorrido
+ * @param {integer} req.body.chatId - Telegram chat id TODO: Encapsulate this in an api keyso o timer seja inserido
+ * @throws {Error} - Rejects the promise with an error message
  */
 module.exports = (req, res) => {
 
@@ -24,7 +24,7 @@ module.exports = (req, res) => {
   if(!validation.isValidString(body.subreddit)) return res.status(400).json({
     error: constants.messages.error.INVALID_SUBREDDIT
   });
-  if(!validator.isValidNumber(body.chatId)) return res.status(400).json({
+  if(!validation.isValidNumber(parseInt(body.chatId))) return res.status(400).json({
     error: constants.messages.error.INVALID_CHATID
   });
 
@@ -52,6 +52,7 @@ module.exports = (req, res) => {
       return res.status(400).json(err);
     });
   } catch (err) {
+    logger.error(err);
     return res.status(500).json({
       error: constants.messages.error.UNEXPECTED
     });
@@ -108,9 +109,3 @@ function getSubscriptions(chatId) {
     }
   });
 }
-
-module.exports = {
-  subscribeToSubreddit: subscribeToSubreddit,
-  getNewsFromSubreddit: getNewsFromSubreddit,
-  getSubscriptions: getSubscriptions
-};

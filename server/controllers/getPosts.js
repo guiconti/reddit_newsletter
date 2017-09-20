@@ -17,7 +17,7 @@ const constants = require('../utils/constants');
  */
 
 module.exports = (subreddit) => {
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (!validation.isValidString(subreddit)) return reject({
       error: constants.messages.error.NOT_VALID_SUBREDDIT
     });
@@ -53,7 +53,8 @@ module.exports = (subreddit) => {
 
 function formatPosts(unformattedPosts) {
   let formattedPosts = [];
-  unformattedPosts.msg.forEach((post) => {
+  console.log(unformattedPosts);
+  unformattedPosts.forEach((post) => {
     let newPost = {
       id: post.data.id,
       title: post.data.title,

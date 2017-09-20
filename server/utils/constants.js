@@ -14,7 +14,8 @@ module.exports = {
       NON_EXISTENT_SUBREDDIT: 'Subreddit informado não existe.',
       ALREADY_SUBSCRIBED: `Você já se inscreveu nesse subreddit.\n
       Se você quiser receber as novidades agora desse subreddit "/reddit news (subreddit)" sem ()`,
-      INVALID_CHATID: 'Esse chat id não é válido.'
+      INVALID_CHATID: 'Esse chat id não é válido.',
+      UNEXPECTED: 'Um erro que nem a gente previu aconteceu, tente falar com algum admin do projeto.'
     }
   }
 };
