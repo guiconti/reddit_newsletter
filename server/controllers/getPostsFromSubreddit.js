@@ -22,7 +22,7 @@ module.exports = (subreddit) => {
       error: constants.messages.error.NOT_VALID_SUBREDDIT
     });
   
-    request.get({url: constants.urls.REDDIT_PREFFIX + subreddit + constants.urls.REDDIT_SUFFIX}, function(err, httpResponse, html) {
+    request.get({url: constants.urls.REDDIT_PREFIX + subreddit + constants.urls.REDDIT_SUFFIX}, function(err, httpResponse, html) {
       if (err) {
         return reject({
           error: constants.messages.error.NON_EXISTENT_SUBREDDIT
