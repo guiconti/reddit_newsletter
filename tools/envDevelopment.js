@@ -19,7 +19,8 @@ const envVars = {
     HOST: 'http://localhost:3301',
     PASSWORD_ENCRYPTATION: 'DEV_ENCRYPTATION_SIMPLE_KEY',
     USER_DATA_ENCRYPTATION: 'DEV_USER_DATA_ENCRYPTATION',
-    TOKEN_ENCRYPTATION: 'DEV_TOKEN_ENCRYPTATION'
+    TOKEN_ENCRYPTATION: 'DEV_TOKEN_ENCRYPTATION',
+    GIBOT_URL: 'http://localhost:3101/telegram/message/chat'
 };
 
 console.log('checking file ' + filename);
