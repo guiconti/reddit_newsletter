@@ -3,9 +3,9 @@
  * @module controllers/sendPosts
  */
 
-const request = require('request');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
+const sendTelegramMessage = require('./sendTelegramMessage');
 
 /**
  * Send all posts to a telegram chat
@@ -42,8 +42,4 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
     }
   });
 }
-  
-function sendTelegramMessage(url, requestInfo) {
-  request.post({url: url, form: requestInfo}, (err, httpResponse, html)=>{});
-};
   

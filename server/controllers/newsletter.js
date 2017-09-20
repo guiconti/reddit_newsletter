@@ -52,6 +52,4 @@ function getNewPosts(subreddit, newPosts) {
     logger.error(err);
     return;
   }
-
 }
-
