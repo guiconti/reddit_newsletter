@@ -19,6 +19,7 @@ module.exports = (req, res) => {
   if (!validation.isValidNumber(parseInt(params.chatId))) return res.status(400).json({
     error: constants.messages.error.INVALID_CHATID
   });
+  params.chatId = parseInt(params.chatId);
 
   try {
     let subscriptions = [];

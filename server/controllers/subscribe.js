@@ -28,6 +28,8 @@ module.exports = (req, res) => {
     error: constants.messages.error.INVALID_CHATID
   });
 
+  body.subreddit = body.subreddit.toLowerCase().trim();
+  body.chatId = parseInt(body.chatId);
   try {
     if (savedPosts[body.subreddit]){
       if (savedPosts[body.subreddit].subscriptions.includes(body.chatId)){
