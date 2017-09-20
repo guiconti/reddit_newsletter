@@ -31,7 +31,6 @@ module.exports = (req, res) => {
     });
   } catch (err) {
     logger.error(err);
-    console.log(err);
     return res.status(500).json({
       error: constants.messages.error.UNEXPECTED
     });

@@ -6,7 +6,8 @@
 module.exports = {
   urls: {
     REDDIT_PREFIX: 'https://www.reddit.com/r/',
-    REDDIT_SUFFIX: '.json'
+    REDDIT_SUFFIX: '.json',
+    GIBOT: process.env.GIBOT_URL
   },
   messages: {
     error: {
@@ -16,6 +17,10 @@ module.exports = {
       Se você quiser receber as novidades agora desse subreddit "/reddit news (subreddit)" sem ()`,
       INVALID_CHATID: 'Esse chat id não é válido.',
       UNEXPECTED: 'Um erro que nem a gente previu aconteceu, tente falar com algum admin do projeto.'
+    },
+    info: {
+      NO_NEW_POSTS: 'Não há nenhum novo post na primeira página desse subreddit desde a última atualização enviada.',
+      NEW_POSTS: 'Novos posts para o subreddit '
     }
   }
 };

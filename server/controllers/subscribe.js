@@ -54,38 +54,4 @@ module.exports = (req, res) => {
       error: constants.messages.error.UNEXPECTED
     });
   }
-  
 };
-
-function getNewsFromSubreddit(subreddit, chatId) {
-  return new Promise((resolve, reject) => {
-    if (!savedPosts[subreddit]){
-      let message = {
-        fail: 'Você não está inscrito nesse subreddit'
-      }
-      return resolve(message);
-    }
-    getPostsFromSubreddit(subreddit).then((formattedPosts) => {
-      let newPosts = getNewPosts(subreddit, formattedPosts);
-      savedPosts[subreddit].posts = formattedPosts;
-      return resolve(newPosts);
-    }, (err) => {
-      return reject(err);
-    });
-  });
-};
-
-function getNewPosts(subreddit, newPosts) {
-  if (!savedPosts[subreddit].posts){
-    return newPosts;
-  }
-  let postsToSend = [];
-  newPosts.forEach((post) => {
-    if (savedPosts[subreddit].posts.findIndex((savedPost) => {
-      return savedPost.id == post.id;
-    }) == -1){
-      postsToSend.push(post);
-    }
-  });
-  return postsToSend;
-}
