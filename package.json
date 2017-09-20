@@ -1,0 +1,19 @@
+{
+  "name": "reddit_newsletter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guiconti/reddit_newsletter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guiconti/reddit_newsletter/issues"
+  },
+  "homepage": "https://github.com/guiconti/reddit_newsletter#readme"
+}
