@@ -20,7 +20,9 @@ module.exports = {
     },
     info: {
       NO_NEW_POSTS: 'Não há nenhum novo post na primeira página desse subreddit desde a última atualização enviada.',
-      NEW_POSTS: 'Novos posts para o subreddit '
+      NEW_POSTS: 'Novos posts para o subreddit ',
+      NO_SUBSCRIPTIONS: 'Esse chat não está inscrito em nenhum subreddit.',
+      SUBSCRIPTIONS: 'Esse chat está inscrito no(s) subreddit(s)\n'
     }
   }
 };

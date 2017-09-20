@@ -6,6 +6,7 @@ const _ = require('underscore');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
+const sendTelegramMessage = require('./sendTelegramMessage');
 
 /**
  * Check subscriptions of a chat id
@@ -26,9 +27,17 @@ module.exports = (req, res) => {
         subscriptions.push(key);
       }
     }
-    return res.status(200).json({
-      msg: subscriptions
-    });
+    let requestInfo = {
+      chatId: params.chatId
+    };
+    if(subscriptions.length == 0){
+      requestInfo.message = constants.messages.info.NO_SUBSCRIPTIONS;
+    } else {
+      requestInfo.message = constants.messages.info.SUBSCRIPTIONS;
+      requestInfo.message += subscriptions.join(', ');
+    }
+    sendTelegramMessage(constants.urls.GIBOT, requestInfo);
+    return res.status(200).json();
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
