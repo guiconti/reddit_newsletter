@@ -9,6 +9,7 @@ const constants = require('../utils/constants');
 const validation = require('../utils/validation');
 const getPosts = require('./getPosts');
 const newsletter = require('./newsletter');
+const sendPosts = require('./sendPosts');
 
 /**
  * Subscribe an endpoint to a new subreddit
@@ -46,8 +47,9 @@ module.exports = (req, res) => {
     }
     getPosts(body.subreddit).then((formattedPosts) => {
       savedPosts[body.subreddit].posts = formattedPosts;
-      newSubscription(body.subreddit, parseInt(body.chatId), 1);
-      return res.status(200).json(formattedPosts);
+      newSubscription(body.subreddit, parseInt(body.chatId), 8);
+      sendPosts(body.subreddit, parseInt(body.chatId), formattedPosts);
+      return res.status(200).json();
     }, (err) => {
       return res.status(400).json(err);
     });
@@ -60,8 +62,7 @@ module.exports = (req, res) => {
 };
 
 function newSubscription(subreddit, chatId, hours){
-  //cron.schedule('0 */' + hours + ' * * *', () => {
-  cron.schedule('*/' + hours + ' * * * *', () => {
+  cron.schedule('0 */' + hours + ' * * *', () => {
     newsletter(subreddit, chatId);
   });
 }
