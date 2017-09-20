@@ -23,7 +23,9 @@
     "body-parser": "^1.15.2",
     "dotenv": "^4.0.0",
     "express": "^4.14.0",
-    "rollbar": "^2.2.7"
+    "request": "^2.82.0",
+    "rollbar": "^2.2.7",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^3.0.2",
