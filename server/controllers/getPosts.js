@@ -53,7 +53,6 @@ module.exports = (subreddit) => {
 
 function formatPosts(unformattedPosts) {
   let formattedPosts = [];
-  console.log(unformattedPosts);
   unformattedPosts.forEach((post) => {
     let newPost = {
       id: post.data.id,

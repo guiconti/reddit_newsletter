@@ -8,9 +8,6 @@ const constants = require('../utils/constants');
 const validation = require('../utils/validation');
 const getPosts = require('./getPosts');
 
-//  TODO: Send this to a database
-let savedPosts = [];
-
 /**
  * Subscribe an endpoint to a new subreddit
  *
@@ -91,21 +88,4 @@ function getNewPosts(subreddit, newPosts) {
     }
   });
   return postsToSend;
-}
-
-function getSubscriptions(chatId) {
-  return new Promise((resolve, reject) => {
-    try {
-      let subscriptions = [];
-      for (let key in savedPosts){
-        if (savedPosts[key].subscriptions.includes(chatId)){
-          subscriptions.push(key);
-        }
-      }
-      return resolve(subscriptions);
-    } catch (err) {
-      console.log(err);
-      return reject(err);
-    }
-  });
 }
