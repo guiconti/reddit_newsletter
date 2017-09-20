@@ -39,7 +39,7 @@ module.exports = (subreddit) => {
           });
         }
         return resolve({
-          msg: subredditInfo.data.children
+          msg: formatPosts(subredditInfo.data.children)
         });
       } catch (e) {
         logger.error(e);
@@ -49,4 +49,17 @@ module.exports = (subreddit) => {
       } 
     });
   });
+};
+
+function formatPosts(unformattedPosts) {
+  let formattedPosts = [];
+  unformattedPosts.msg.forEach((post) => {
+    let newPost = {
+      id: post.data.id,
+      title: post.data.title,
+      url: post.data.url
+    };
+    formattedPosts.push(newPost);
+  });
+  return(formattedPosts);
 };

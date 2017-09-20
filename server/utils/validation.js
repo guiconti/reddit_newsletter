@@ -14,3 +14,7 @@ const _ = require('underscore');
 exports.isValidString = (stringToValidate) => {
   return _.isString(stringToValidate) && stringToValidate.trim().length > 0;
 };
+
+exports.isValidNumber = (numberToValidate) => {
+  return _.isNumber(numberToValidate) && !_.isNull(numberToValidate);
+};

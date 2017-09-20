@@ -5,6 +5,7 @@
 const _ = require('underscore');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
+const getPosts = require('./getPosts');
 
 //  TODO: Send this to a database
 let savedPosts = [];
@@ -44,14 +45,16 @@ module.exports = (req, res) => {
         subscriptions: [body.chatId]
       };
     }
-    getPostsFromSubreddit(body.subreddit).then((formattedPosts) => {
+    getPosts(body.subreddit).then((formattedPosts) => {
       savedPosts[body.subreddit].posts = formattedPosts;
-      return resolve(formattedPosts);
+      return res.status(200).json(formattedPosts);
     }, (err) => {
-      return reject(err);
+      return res.status(400).json(err);
     });
   } catch (err) {
-    return reject(err);
+    return res.status(500).json({
+      error: constants.messages.error.UNEXPECTED
+    });
   }
   
 };
@@ -73,29 +76,6 @@ function getNewsFromSubreddit(subreddit, chatId) {
     });
   });
 };
-
-function getPostsFromSubreddit(subreddit) {
-  return new Promise((resolve, reject) => {
-    let url = REDDIT_PREFIX + subreddit + '/' + FRONT_PAGE_SUFFIX;
-    request.get({url: url}, (err, httpResponse, frontPageJSON) => {
-
-      if (err) return reject(err);
-      let frontPage = JSON.parse(frontPageJSON);
-      if (frontPage.error) return reject(err);
-
-      let formattedPosts = [];
-      frontPage.msg.forEach((post) => {
-        let newPost = {
-          id: post.data.id,
-          title: post.data.title,
-          url: post.data.url
-        };
-        formattedPosts.push(newPost);
-      });
-      return resolve(formattedPosts);
-    });
-  });
-}
 
 function getNewPosts(subreddit, newPosts) {
   if (!savedPosts[subreddit].posts){
