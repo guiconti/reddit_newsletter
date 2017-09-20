@@ -38,9 +38,7 @@ module.exports = (subreddit) => {
             error: constants.messages.error.NON_EXISTENT_SUBREDDIT
           });
         }
-        return resolve({
-          msg: formatPosts(subredditInfo.data.children)
-        });
+        return resolve(formatPosts(subredditInfo.data.children));
       } catch (e) {
         logger.error(e);
         return reject({

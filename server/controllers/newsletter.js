@@ -20,10 +20,10 @@ module.exports = (subreddit, chatId) => {
 
   if(!validation.isValidString(subreddit)) return logger.error(constants.messages.error.INVALID_SUBREDDIT);
   if(!validation.isValidNumber(parseInt(chatId))) return logger.error(constants.messages.error.INVALID_CHATID);
-  
+
   getPosts(subreddit).then((newPosts) => {
     let postsToSend = getNewPosts(subreddit, newPosts);
-    return sendPosts(subreddit, postsToSend);
+    return sendPosts(subreddit, chatId, postsToSend);
   }, (err) => {
     return logger.error(err);
   });
@@ -34,14 +34,20 @@ function getNewPosts(subreddit, newPosts) {
     return newPosts;
   }
   let postsToSend = [];
-  newPosts.forEach((post) => {
-    if (savedPosts[subreddit].posts.findIndex((savedPost) => {
-      return savedPost.id == post.id;
-    }) == -1){
-      postsToSend.push(post);
-    }
-  });
-  return postsToSend;
+  try {
+    newPosts.forEach((post) => {
+      if (savedPosts[subreddit].posts.findIndex((savedPost) => {
+        return savedPost.id == post.id;
+      }) == -1){
+        postsToSend.push(post);
+      }
+    });
+    return postsToSend;
+  } catch (err) {
+    logger.error(err);
+    return;
+  }
+
 }
 
 function sendPosts(subreddit, chatId, unformattedPosts) {
