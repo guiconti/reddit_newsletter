@@ -20,7 +20,8 @@ const envVars = {
     PASSWORD_ENCRYPTATION: 'DEV_ENCRYPTATION_SIMPLE_KEY',
     USER_DATA_ENCRYPTATION: 'DEV_USER_DATA_ENCRYPTATION',
     TOKEN_ENCRYPTATION: 'DEV_TOKEN_ENCRYPTATION',
-    GIBOT_URL: 'http://localhost:3101/telegram/message/chat'
+    GIBOT_URL: 'http://localhost:3101/telegram/message/chat',
+    DB_HOST: 'mongodb://localhost:27017/Reddit_Newsletter'
 };
 
 console.log('checking file ' + filename);
