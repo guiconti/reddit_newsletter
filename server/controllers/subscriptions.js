@@ -3,6 +3,8 @@
  * @module controllers/subscriptions
  */
 const _ = require('underscore');
+const mongoose = require('mongoose');
+const SubredditModel = mongoose.model('Subreddit');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
@@ -23,22 +25,28 @@ module.exports = (req, res) => {
 
   try {
     let subscriptions = [];
-    for (let key in savedPosts){
-      if (savedPosts[key].subscriptions.includes(params.chatId)){
-        subscriptions.push(key);
+    SubredditModel.find({subscriptions: params.chatId}, (err, subredditSubscriptions) => {
+      if (err) {
+        logger.error(err);
+        return res.status(500).json({
+          error: constants.messages.error.UNEXPECTED
+        });
       }
-    }
-    let requestInfo = {
-      chatId: params.chatId
-    };
-    if(subscriptions.length == 0){
-      requestInfo.message = constants.messages.info.NO_SUBSCRIPTIONS;
-    } else {
-      requestInfo.message = constants.messages.info.SUBSCRIPTIONS;
-      requestInfo.message += subscriptions.join(', ');
-    }
-    sendTelegramMessage(constants.urls.GIBOT, requestInfo);
-    return res.status(200).json();
+      let requestInfo = {
+        chatId: params.chatId
+      };
+      if (subredditSubscriptions.length == 0){
+        requestInfo.message = constants.messages.info.NO_SUBSCRIPTIONS;
+      } else {
+        subredditSubscriptions.forEach((actualSubscription) => {
+          subscriptions.push(actualSubscription.name);
+        });
+        requestInfo.message = constants.messages.info.SUBSCRIPTIONS;
+        requestInfo.message += subscriptions.join(', ');
+      }
+      sendTelegramMessage(constants.urls.GIBOT, requestInfo);
+      return res.status(200).json();
+    });
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
