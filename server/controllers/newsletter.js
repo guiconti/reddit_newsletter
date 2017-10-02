@@ -3,6 +3,7 @@
  * @module controllers/newsletter
  */
 const _ = require('underscore');
+const SubredditModel = require('../models/Subreddit');
 const request = require('request');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
@@ -23,33 +24,43 @@ module.exports = (subreddit, chatId) => {
 
   getPosts(subreddit).then((newPosts) => {
     let postsToSend = getNewPosts(subreddit, newPosts);
-    sendPosts(subreddit, chatId, postsToSend).then(() => {
-      return;
-    }, (err) => {
-      logger.error(err);
-      return;
-    });
+    sendPosts(subreddit, chatId, postsToSend)
+      .then(() => {
+        return;
+      }, (err) => {
+        logger.error(err);
+        return;
+      });
   }, (err) => {
     return logger.error(err);
   });
 };
 
 function getNewPosts(subreddit, newPosts) {
-  if (!savedPosts[subreddit].posts){
-    return newPosts;
-  }
-  let postsToSend = [];
-  try {
-    newPosts.forEach((post) => {
-      if (savedPosts[subreddit].posts.findIndex((savedPost) => {
-        return savedPost.id == post.id;
-      }) == -1){
-        postsToSend.push(post);
-      }
-    });
-    return postsToSend;
-  } catch (err) {
-    logger.error(err);
-    return;
-  }
+  SubredditModel.findOne({name: subreddit}, (err, subredditInfo) => {
+    if (!subredditInfo.posts || subredditInfo.posts.length == 0){
+      subredditInfo.posts = newPosts;
+    }
+    let postsToSend = [];
+    try {
+      newPosts.forEach((post) => {
+        if (subredditInfo.posts.findIndex((savedPost) => {
+          return savedPost.id == post.id;
+        }) == -1){
+          postsToSend.push(post);
+        }
+      });
+      subredditInfo.posts = postsToSend;
+      subredditInfo.save((err) => {
+        if (err) {
+          logger.error(err);
+          return postsToSend;
+        }
+        return subredditInfo.posts;
+      });
+    } catch (err) {
+      logger.error(err);
+      return;
+    }
+  });
 }

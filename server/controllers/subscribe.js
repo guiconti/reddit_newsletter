@@ -3,7 +3,7 @@
  * @module controllers/subscribe
  */
 const _ = require('underscore');
-const SubredditModel = require('./models/Subreddit');
+const SubredditModel = require('../models/Subreddit');
 const cron = require('node-cron');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
@@ -81,7 +81,12 @@ module.exports = (req, res) => {
           subreddit.posts = formattedPosts;
           newSubscription(subreddit.name, parseInt(body.chatId), 8);
           sendPosts(subreddit.name, parseInt(body.chatId), subreddit.posts);
-          return res.status(200).json();
+          subreddit.save((err) => {
+            if (err) {
+              return res.status(400).json(err);
+            }
+            return res.status(200).json();
+          });
         })
         .catch((err) => {
           return res.status(400).json(err);
@@ -89,7 +94,12 @@ module.exports = (req, res) => {
     } else {
       newSubscription(subreddit.name, parseInt(body.chatId), 8);
       sendPosts(subreddit.name, parseInt(body.chatId), subreddit.posts);
-      return res.status(200).json();
+      subreddit.save((err) => {
+        if (err) {
+          return res.status(400).json(err);
+        }
+        return res.status(200).json();
+      });
     }
   } catch (err) {
     logger.error(err);
