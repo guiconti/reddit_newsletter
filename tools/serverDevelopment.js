@@ -3,6 +3,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+require('../server/core/mongoose');
 const express = require('express');
 const router = require('../server/core/router.js');
 const morgan = require('morgan');

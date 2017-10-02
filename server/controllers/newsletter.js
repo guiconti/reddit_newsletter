@@ -3,7 +3,8 @@
  * @module controllers/newsletter
  */
 const _ = require('underscore');
-const SubredditModel = require('../models/Subreddit');
+const mongoose = require('mongoose');
+const SubredditModel = mongoose.model('Subreddit');
 const request = require('request');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');

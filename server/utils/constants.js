@@ -24,5 +24,8 @@ module.exports = {
       NO_SUBSCRIPTIONS: 'Esse chat não está inscrito em nenhum subreddit.',
       SUBSCRIPTIONS: 'Esse chat está inscrito no(s) subreddit(s)\n'
     }
+  },
+  values: {
+    HOURS_TO_UPDATE: 1
   }
 };
