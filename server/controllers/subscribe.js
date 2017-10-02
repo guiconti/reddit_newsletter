@@ -3,6 +3,7 @@
  * @module controllers/subscribe
  */
 const _ = require('underscore');
+const SubredditModel = require('./models/Subreddit');
 const cron = require('node-cron');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
@@ -31,6 +32,25 @@ module.exports = (req, res) => {
   body.subreddit = body.subreddit.toLowerCase().trim();
   body.chatId = parseInt(body.chatId);
   try {
+    SubredditModel.findOne({name: body.subreddit}, (err, subreddit) => {
+      if (err){
+        return res.status(500).json({
+          error: constants.messages.error.UNEXPECTED
+        });
+      }
+      if (!subreddit){
+        subreddit = {
+          name: body.subreddit,
+          subscriptions: [body.chatId],
+          posts: []
+        };
+      } else if (subreddit.subscriptions.includes(body.chatId)){
+        return res.status(400).json({
+          error: constants.messages.error.ALREADY_SUBSCRIBED
+        });
+      }
+    });
+    /*
     if (savedPosts[body.subreddit]){
       if (savedPosts[body.subreddit].subscriptions.includes(body.chatId)){
         return res.status(400).json({
@@ -54,7 +74,23 @@ module.exports = (req, res) => {
       return res.status(200).json();
     }, (err) => {
       return res.status(400).json(err);
-    });
+    });*/
+    if (subreddit.posts.length == 0){
+      getPosts(subreddit.name)
+        .then((formattedPosts) => {
+          subreddit.posts = formattedPosts;
+          newSubscription(subreddit.name, parseInt(body.chatId), 8);
+          sendPosts(subreddit.name, parseInt(body.chatId), subreddit.posts);
+          return res.status(200).json();
+        })
+        .catch((err) => {
+          return res.status(400).json(err);
+        })
+    } else {
+      newSubscription(subreddit.name, parseInt(body.chatId), 8);
+      sendPosts(subreddit.name, parseInt(body.chatId), subreddit.posts);
+      return res.status(200).json();
+    }
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
