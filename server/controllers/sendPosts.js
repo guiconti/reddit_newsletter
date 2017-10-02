@@ -24,7 +24,7 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
     if (unformattedPosts.length == 0){
       requestInfo.message = constants.messages.info.NO_NEW_POSTS;
       sendTelegramMessage(constants.urls.GIBOT, requestInfo);
-      resolve();
+      return resolve();
     }
   
     requestInfo.message = constants.messages.info.NEW_POSTS + subreddit + '\n\n';
@@ -35,10 +35,10 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
         requestInfo.message = post.title + '\n' + post.url + '\n\n';
         sendTelegramMessage(constants.urls.GIBOT, requestInfo);
       });
-      resolve();
+      return resolve();
     } catch(err) {
       logger.error(err);
-      reject(err);
+      return reject(err);
     }
   });
 }
