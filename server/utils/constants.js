@@ -26,6 +26,6 @@ module.exports = {
     }
   },
   values: {
-    HOURS_TO_UPDATE: 1
+    HOURS_TO_UPDATE: 8
   }
 };

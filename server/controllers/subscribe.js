@@ -92,8 +92,8 @@ module.exports = (req, res) => {
 };
 
 function newSubscription(subreddit, chatId, hours){
-  cron.schedule('*/' + hours + ' * * * *', () => {
-  //cron.schedule('0 */' + hours + ' * * *', () => {
+  //cron.schedule('*/' + hours + ' * * * *', () => {
+  cron.schedule('0 */' + hours + ' * * *', () => {
     newsletter(subreddit, chatId);
   });
 }
