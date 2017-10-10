@@ -6,6 +6,7 @@ router.use(bodyParser.json());
 
 const subscribe = require('../controllers/subscribe');
 const subscriptions = require('../controllers/subscriptions');
+const ratePost = require('../controllers/ratePost');
 
 //  Placeholder API
 router.get('/', (req, res) => {
@@ -13,5 +14,6 @@ router.get('/', (req, res) => {
 });
 router.post('/subscribe', subscribe);
 router.get('/subscriptions/:chatId', subscriptions);
+router.post('/rate', ratePost);
 
 module.exports = router;
