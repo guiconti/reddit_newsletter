@@ -55,7 +55,11 @@ function formatPosts(unformattedPosts) {
     let newPost = {
       id: post.data.id,
       title: post.data.title,
-      url: post.data.url
+      url: post.data.url,
+      redditScore: post.data.score,
+      comments: post.data.num_comments,
+      crossposts: post.data.num_crossposts,
+      internalScore: 0
     };
     formattedPosts.push(newPost);
   });

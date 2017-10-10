@@ -10,7 +10,11 @@ let SubredditSchema = new Schema({
     posts: [{
       id: {type: String, required: true},
       title: {type: String, required: true},
-      url: {type: String, required: true}
+      url: {type: String, required: true},
+      redditScore: {type: Number, required: true, default: 0},
+      comments: {type: Number, required: true, default: 0},
+      crossposts: {type: Number, required: true, default: 0},
+      internalScore: {type: Number, required: true, default: 0}
     }]
 });
 
