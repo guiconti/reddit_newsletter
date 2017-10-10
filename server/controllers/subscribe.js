@@ -12,6 +12,7 @@ const validation = require('../utils/validation');
 const getPosts = require('./getPosts');
 const newsletter = require('./newsletter');
 const sendPosts = require('./sendPosts');
+const sendTelegramMessage = require('./sendTelegramMessage');
 
 /**
  * Subscribe an endpoint to a new subreddit
@@ -47,8 +48,13 @@ module.exports = (req, res) => {
       };
       subreddit = new SubredditModel(newSubreddit);
     } else if (subreddit.subscriptions.includes(body.chatId)){
+      let requestInfo = {
+        chatId: body.chatId,
+        message: constants.messages.error.ALREADY_SUBSCRIBED
+      };
+      sendTelegramMessage(constants.urls.GIBOT, requestInfo);
       return res.status(400).json({
-        error: constants.messages.error.ALREADY_SUBSCRIBED
+        err: constants.messages.error.ALREADY_SUBSCRIBED
       });
     }
     try {
