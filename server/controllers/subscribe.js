@@ -42,7 +42,7 @@ module.exports = (req, res) => {
     if (!subreddit){
       let newSubreddit = {
         name: body.subreddit,
-        subscriptions: [body.chatId],
+        subscriptions: [],
         posts: []
       };
       subreddit = new SubredditModel(newSubreddit);
@@ -52,33 +52,29 @@ module.exports = (req, res) => {
       });
     }
     try {
-      if (subreddit.posts.length == 0){
-        getPosts(subreddit.name)
-          .then((formattedPosts) => {
-            subreddit.posts = formattedPosts;
-            newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
-            sendPosts(subreddit.name, parseInt(body.chatId), subreddit.posts);
-            subreddit.save((err, createdSubreddit) => {
-              if (err) {
-                return res.status(400).json(err);
-              }
-              return res.status(200).json();
-            });
-          })
-          .catch((err) => {
-            logger.error(err);
-            return res.status(500).json(err);
-          })
-      } else {
-        newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
-        sendPosts(subreddit.name, parseInt(body.chatId), subreddit.posts);
-        subreddit.save((err) => {
-          if (err) {
-            return res.status(400).json(err);
-          }
-          return res.status(200).json();
+      subreddit.subscriptions.push(parseInt(body.chatId));
+      getPosts(subreddit.name)
+        .then((formattedPosts) => {
+          formattedPosts.forEach((formattedPost) => {
+            if (subreddit.posts.findIndex((savedPost) => {
+              return savedPost.id == formattedPost.id;
+            }) == -1){
+              subreddit.posts.push(formattedPost);
+            }
+          });
+          newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
+          sendPosts(subreddit.name, parseInt(body.chatId), formattedPost);
+          subreddit.save((err, createdSubreddit) => {
+            if (err) {
+              return res.status(400).json(err);
+            }
+            return res.status(200).json();
+          });
+        })
+        .catch((err) => {
+          logger.error(err);
+          return res.status(500).json(err);
         });
-      }
     } catch (err) {
       logger.error(err);
       return res.status(500).json({

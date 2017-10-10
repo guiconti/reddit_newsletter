@@ -61,7 +61,7 @@ function getNewPosts(subreddit, newPosts) {
             postsToSend.push(post);
           }
         });
-        subredditInfo.posts = postsToSend;
+        subredditInfo.posts.push(postsToSend);
         subredditInfo.save((err) => {
           if (err) {
             logger.error(err);
