@@ -8,6 +8,7 @@ const SubredditModel = mongoose.model('Subreddit');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
+const updateLoop = require('./updateLoop');
 
 /**
  * Initiate all newsletters
@@ -16,8 +17,12 @@ const validation = require('../utils/validation');
  */
 module.exports = () => {
   SubredditModel.find({}, 'name subscriptions')
-    .then((subscriptions) => {
-      console.log(subscriptions);
+    .then((subreddits) => {
+      subreddits.forEach((subreddit) => {
+        subreddit.subscriptions.forEach((chatId) => {
+          updateLoop(subreddit.name, chatId, constants.values.HOURS_TO_UPDATE);
+        })
+      });
     })
     .catch((err) => {
       logger.critical(err);

@@ -56,5 +56,5 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
       return reject(err);
     }
   });
-}
+};
   

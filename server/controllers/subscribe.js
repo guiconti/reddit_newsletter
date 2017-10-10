@@ -5,7 +5,6 @@
 const _ = require('underscore');
 const mongoose = require('mongoose');
 const SubredditModel = mongoose.model('Subreddit');
-const cron = require('node-cron');
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
@@ -13,12 +12,13 @@ const getPosts = require('./getPosts');
 const newsletter = require('./newsletter');
 const sendPosts = require('./sendPosts');
 const sendTelegramMessage = require('./sendTelegramMessage');
+const updateLoop = require('./updateLoop');
 
 /**
  * Subscribe an endpoint to a new subreddit
  *
  * @param {string} req.body.subreddit - Subreddit name
- * @param {integer} req.body.chatId - Telegram chat id TODO: Encapsulate this in an api keyso o timer seja inserido
+ * @param {integer} req.body.chatId - Telegram chat id
  * @throws {Error} - Rejects the promise with an error message
  */
 module.exports = (req, res) => {
@@ -64,7 +64,7 @@ module.exports = (req, res) => {
               }
             });
   
-            newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
+            updateLoop(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
             sendPosts(subreddit.name, parseInt(body.chatId), formattedPosts);
             subreddit.save((err, createdSubreddit) => {
               if (err) {
@@ -91,10 +91,3 @@ module.exports = (req, res) => {
       });
     });
 };
-
-function newSubscription(subreddit, chatId, hours){
-  //cron.schedule('*/' + hours + ' * * * *', () => {
-  cron.schedule('0 */' + hours + ' * * *', () => {
-    newsletter(subreddit, chatId);
-  });
-}
