@@ -48,31 +48,36 @@ module.exports = (subreddit, chatId) => {
 
 function getNewPosts(subreddit, newPosts) {
   return new Promise((resolve, reject) => {
-    SubredditModel.findOne({name: subreddit}, (err, subredditInfo) => {
-      if (!subredditInfo.posts || subredditInfo.posts.length == 0){
-        subredditInfo.posts = newPosts;
-      }
-      let postsToSend = [];
-      try {
-        newPosts.forEach((post) => {
-          if (subredditInfo.posts.findIndex((savedPost) => {
-            return savedPost.id == post.id;
-          }) == -1){
-            postsToSend.push(post);
-          }
-        });
-        subredditInfo.posts.push(postsToSend);
-        subredditInfo.save((err) => {
-          if (err) {
-            logger.error(err);
-            return resolve(postsToSend);
-          }
-          return resolve(subredditInfo.posts);
-        });
-      } catch (err) {
+    SubredditModel.findOne({name: subreddit})
+      .then((subredditInfo) => {
+        if (!subredditInfo.posts || subredditInfo.posts.length == 0){
+          subredditInfo.posts = newPosts;
+        }
+        let postsToSend = [];
+        try {
+          newPosts.forEach((post) => {
+            if (subredditInfo.posts.findIndex((savedPost) => {
+              return savedPost.id == post.id;
+            }) == -1){
+              postsToSend.push(post);
+            }
+          });
+          subredditInfo.posts.push(postsToSend);
+          subredditInfo.save((err) => {
+            if (err) {
+              logger.error(err);
+              return resolve(postsToSend);
+            }
+            return resolve(subredditInfo.posts);
+          });
+        } catch (err) {
+          logger.error(err);
+          return reject(err);
+        }
+      })
+      .catch((err) => {
         logger.error(err);
         return reject(err);
-      }
-    });
+      });
   });
 }

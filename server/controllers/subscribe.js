@@ -33,62 +33,63 @@ module.exports = (req, res) => {
 
   body.subreddit = body.subreddit.toLowerCase().trim();
   body.chatId = parseInt(body.chatId);
-  SubredditModel.findOne({name: body.subreddit}, (err, subreddit) => {
-    if (err){
-      logger.error(err);
-      return res.status(500).json({
-        error: constants.messages.error.UNEXPECTED
-      });
-    }
-    if (!subreddit){
-      let newSubreddit = {
-        name: body.subreddit,
-        subscriptions: [],
-        posts: []
-      };
-      subreddit = new SubredditModel(newSubreddit);
-    } else if (subreddit.subscriptions.includes(body.chatId)){
-      let requestInfo = {
-        chatId: body.chatId,
-        message: constants.messages.error.ALREADY_SUBSCRIBED
-      };
-      sendTelegramMessage(constants.urls.GIBOT, requestInfo);
-      return res.status(400).json({
-        err: constants.messages.error.ALREADY_SUBSCRIBED
-      });
-    }
-    try {
-      subreddit.subscriptions.push(parseInt(body.chatId));
-      getPosts(subreddit.name)
-        .then((formattedPosts) => {
-          formattedPosts.forEach((formattedPost) => {
-            if (subreddit.posts.findIndex((savedPost) => {
-              return savedPost.id == formattedPost.id;
-            }) == -1){
-              subreddit.posts.push(formattedPost);
-            }
-          });
-
-          newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
-          sendPosts(subreddit.name, parseInt(body.chatId), formattedPosts);
-          subreddit.save((err, createdSubreddit) => {
-            if (err) {
-              return res.status(400).json(err);
-            }
-            return res.status(200).json();
-          });
-        })
-        .catch((err) => {
-          logger.error(err);
-          return res.status(500).json(err);
+  SubredditModel.findOne({name: body.subreddit})
+    .then((subreddit) => {
+      if (!subreddit){
+        let newSubreddit = {
+          name: body.subreddit,
+          subscriptions: [],
+          posts: []
+        };
+        subreddit = new SubredditModel(newSubreddit);
+      } else if (subreddit.subscriptions.includes(body.chatId)){
+        let requestInfo = {
+          chatId: body.chatId,
+          message: constants.messages.error.ALREADY_SUBSCRIBED
+        };
+        sendTelegramMessage(constants.urls.GIBOT, requestInfo);
+        return res.status(400).json({
+          err: constants.messages.error.ALREADY_SUBSCRIBED
         });
-    } catch (err) {
+      }
+      try {
+        subreddit.subscriptions.push(parseInt(body.chatId));
+        getPosts(subreddit.name)
+          .then((formattedPosts) => {
+            formattedPosts.forEach((formattedPost) => {
+              if (subreddit.posts.findIndex((savedPost) => {
+                return savedPost.id == formattedPost.id;
+              }) == -1){
+                subreddit.posts.push(formattedPost);
+              }
+            });
+  
+            newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
+            sendPosts(subreddit.name, parseInt(body.chatId), formattedPosts);
+            subreddit.save((err, createdSubreddit) => {
+              if (err) {
+                return res.status(400).json(err);
+              }
+              return res.status(200).json();
+            });
+          })
+          .catch((err) => {
+            logger.error(err);
+            return res.status(500).json(err);
+          });
+      } catch (err) {
+        logger.error(err);
+        return res.status(500).json({
+          error: constants.messages.error.UNEXPECTED
+        });
+      }
+    })
+    .catch((err) => {
       logger.error(err);
       return res.status(500).json({
         error: constants.messages.error.UNEXPECTED
       });
-    }
-  });
+    });
 };
 
 function newSubscription(subreddit, chatId, hours){

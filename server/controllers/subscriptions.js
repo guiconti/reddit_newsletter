@@ -22,16 +22,9 @@ module.exports = (req, res) => {
     error: constants.messages.error.INVALID_CHATID
   });
   params.chatId = parseInt(params.chatId);
-
-  try {
-    let subscriptions = [];
-    SubredditModel.find({subscriptions: params.chatId}, (err, subredditSubscriptions) => {
-      if (err) {
-        logger.error(err);
-        return res.status(500).json({
-          error: constants.messages.error.UNEXPECTED
-        });
-      }
+  let subscriptions = [];
+  SubredditModel.find({subscriptions: params.chatId})
+    .then((subredditSubscriptions) => {
       let requestInfo = {
         chatId: params.chatId
       };
@@ -46,11 +39,11 @@ module.exports = (req, res) => {
       }
       sendTelegramMessage(constants.urls.GIBOT, requestInfo);
       return res.status(200).json();
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).json({
+        error: constants.messages.error.UNEXPECTED
+      });
     });
-  } catch (err) {
-    logger.error(err);
-    return res.status(500).json({
-      error: constants.messages.error.UNEXPECTED
-    });
-  }
 }
