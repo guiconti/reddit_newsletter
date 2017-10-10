@@ -68,8 +68,9 @@ module.exports = (req, res) => {
               subreddit.posts.push(formattedPost);
             }
           });
+
           newSubscription(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
-          sendPosts(subreddit.name, parseInt(body.chatId), formattedPost);
+          sendPosts(subreddit.name, parseInt(body.chatId), formattedPosts);
           subreddit.save((err, createdSubreddit) => {
             if (err) {
               return res.status(400).json(err);
@@ -91,8 +92,8 @@ module.exports = (req, res) => {
 };
 
 function newSubscription(subreddit, chatId, hours){
-  //cron.schedule('*/' + hours + ' * * * *', () => {
-  cron.schedule('0 */' + hours + ' * * *', () => {
+  cron.schedule('*/' + hours + ' * * * *', () => {
+  //cron.schedule('0 */' + hours + ' * * *', () => {
     newsletter(subreddit, chatId);
   });
 }

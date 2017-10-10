@@ -43,7 +43,7 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
   
     requestInfo.message = constants.messages.info.NEW_POSTS + subreddit + '\n\n';
     sendTelegramMessage(constants.urls.GIBOT, requestInfo);
-    
+
     requestInfo.options = options;
     try{
       unformattedPosts.forEach((post) => {
