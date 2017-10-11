@@ -3,16 +3,22 @@
  * @module controllers/createTelegramKeyboard
  */
 
-module.exports = (postId) => {
+module.exports = (subreddit, postId) => {
+  /**
+   * We have to use poor object name because telegram does not support too manyu characters
+   * on keyboards callback_data
+   */
   const likeButton = JSON.stringify({
-    type: 'reddit',
-    postId: postId, 
-    value: 1
+    t: 'reddit',
+    s: subreddit,
+    p: postId,
+    v: 1
   });
   const dislikeButton = JSON.stringify({
-    type: 'reddit',
-    postId: postId,
-    value: -1
+    t: 'reddit',
+    s: subreddit,
+    p: postId,
+    v: -1
   });
   const inline_keyboard = [
     [{ text: '\u{1F44D}' , callback_data: likeButton }, { text: '\u{1F44E}' , callback_data: dislikeButton }]

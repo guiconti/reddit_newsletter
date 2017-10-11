@@ -34,12 +34,14 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
     try{
       unformattedPosts.forEach((post) => {
         requestInfo.message = post.title + '\n' + post.url + '\n\n';
-        requestInfo.options = createTelegramKeyboard(post.id); 
+        requestInfo.options = createTelegramKeyboard(subreddit, post.id);
         sendTelegramMessage(constants.urls.GIBOT, requestInfo);
       });
       return resolve();
     } catch(err) {
       logger.error(err);
+      console.log(err);
+
       return reject(err);
     }
   });
