@@ -6,20 +6,7 @@
 const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const sendTelegramMessage = require('./sendTelegramMessage');
-const likeButton = JSON.stringify({
-  type: 'reddit', 
-  value: 1
-});
-const dislikeButton = JSON.stringify({
-  type: 'reddit',
-  value: -1
-});
-const inline_keyboard = [
-  [{ text: '\u{1F44D}' , callback_data: likeButton }, { text: '\u{1F44E}' , callback_data: dislikeButton }]
-];
-const options = {
-  reply_markup: {inline_keyboard}
-};
+const createTelegramKeyboard = require('./createTelegramKeyboard');
 
 /**
  * Send all posts to a telegram chat
@@ -44,10 +31,10 @@ module.exports = (subreddit, chatId, unformattedPosts) => {
     requestInfo.message = constants.messages.info.NEW_POSTS + subreddit + '\n\n';
     sendTelegramMessage(constants.urls.GIBOT, requestInfo);
 
-    requestInfo.options = options;
     try{
       unformattedPosts.forEach((post) => {
         requestInfo.message = post.title + '\n' + post.url + '\n\n';
+        requestInfo.options = createTelegramKeyboard(post.id); 
         sendTelegramMessage(constants.urls.GIBOT, requestInfo);
       });
       return resolve();
