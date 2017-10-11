@@ -12,9 +12,9 @@ const newsletter = require('./newsletter');
  * @param {integer} chatId - Telegram chat id
  * @param {integer} hours - Define the interval in hours for each update
  */
-module.exports = (subreddit, chatId, hours) => {
+module.exports = () => {
   //cron.schedule('*/' + hours + ' * * * *', () => {
   cron.schedule('0 */' + hours + ' * * *', () => {
-    newsletter(subreddit, chatId);
+    newsletter();
   });
 };

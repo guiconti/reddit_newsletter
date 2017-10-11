@@ -9,10 +9,8 @@ const logger = require('../../tools/logger');
 const constants = require('../utils/constants');
 const validation = require('../utils/validation');
 const getPosts = require('./getPosts');
-const newsletter = require('./newsletter');
 const sendPosts = require('./sendPosts');
 const sendTelegramMessage = require('./sendTelegramMessage');
-const updateLoop = require('./updateLoop');
 
 /**
  * Subscribe an endpoint to a new subreddit
@@ -64,7 +62,6 @@ module.exports = (req, res) => {
               }
             });
   
-            updateLoop(subreddit.name, parseInt(body.chatId), constants.values.HOURS_TO_UPDATE);
             sendPosts(subreddit.name, parseInt(body.chatId), formattedPosts);
             subreddit.save((err, createdSubreddit) => {
               if (err) {

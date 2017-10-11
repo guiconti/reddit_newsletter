@@ -16,7 +16,7 @@ db.on('error', function(err){
 // Connection ok log the success
 db.once('open', function callback(){
   console.info('MongoDB connection is established.');
-  require('../controllers/initiateNewsletters')();
+  require('../controllers/startLoop')();
 });
 
 // Connect lost log the event and try to reconnect

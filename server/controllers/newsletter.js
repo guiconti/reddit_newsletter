@@ -19,34 +19,40 @@ const sendPosts = require('./sendPosts');
  * @param {integer} chatId - Telegram chat id TODO: Encapsulate this in an api keyso o timer seja inserido
  * @throws {Error} - Rejects the promise with an error message
  */
-module.exports = (subreddit, chatId) => {
-  if(!validation.isValidString(subreddit)) return logger.error(constants.messages.error.INVALID_SUBREDDIT);
-  if(!validation.isValidNumber(parseInt(chatId))) return logger.error(constants.messages.error.INVALID_CHATID);
-
-  getPosts(subreddit)
-    .then((newPosts) => {
-      let postsToSend = getNewPosts(subreddit, newPosts);
-      getNewPosts(subreddit, newPosts)
-        .then((postsToSend) => {
-          sendPosts(subreddit, chatId, postsToSend)
-            .then(() => {
-              return;
+module.exports = () => {
+  SubredditModel.find({}, 'name subscriptions')
+    .then((subreddits) => {
+      subreddits.forEach((subreddit) => {
+        getPosts(subreddit.name)
+        .then((newPosts) => {
+          getNewPosts(subreddit, newPosts)
+            .then((postsToSend) => {
+              subreddit.subscriptions.forEach((subscription) => {
+                sendPosts(subreddit.name, subscription, postsToSend)
+                .then(() => {
+                  return;
+                })
+                .catch((err) => {
+                  logger.error(err);
+                  return;
+                });
+              })
             })
             .catch((err) => {
               logger.error(err);
-              return;
             });
         })
         .catch((err) => {
-
+          return logger.critical(err);
         });
+      });
     })
     .catch((err) => {
-      return logger.error(err);
+      return logger.critical(err);
     });
 };
 
-function getNewPosts(subreddit, newPosts) {
+function getNewPosts() {
   return new Promise((resolve, reject) => {
     SubredditModel.findOne({name: subreddit})
       .then((subredditInfo) => {
