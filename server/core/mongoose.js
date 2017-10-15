@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
+const constants = require('../utils/constants');
 
 const DB_HOST = process.env.NODE_ENV == 'development'?process.env.DB_HOST:(process.env.DB_HOST_PREFIX + process.env.DB_HOST_USERNAME + ':' + process.env.DB_HOST_PASSWORD + process.env.DB_HOST_SUFFIX);
 
@@ -16,7 +17,7 @@ db.on('error', function(err){
 // Connection ok log the success
 db.once('open', function callback(){
   console.info('MongoDB connection is established.');
-  require('../controllers/startLoop')();
+  require('../controllers/startLoop')(1);
 });
 
 // Connect lost log the event and try to reconnect
