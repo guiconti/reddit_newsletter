@@ -18,5 +18,5 @@ const rollbar = new Rollbar({
     environment: process.env.NODE_ENV
   }
 });
-
+rollbar.log('Hi!');
 module.exports = rollbar;

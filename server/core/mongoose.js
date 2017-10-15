@@ -16,8 +16,8 @@ db.on('error', function(err){
 
 // Connection ok log the success
 db.once('open', function callback(){
-  console.info('MongoDB connection is established.');
-  require('../controllers/startLoop')(1);
+  console.info('MongoDB connection is estsablished.');
+  require('../controllers/startLoop')(constants.values.HOURS_TO_UPDATE);
 });
 
 // Connect lost log the event and try to reconnect

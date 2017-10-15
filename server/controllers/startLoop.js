@@ -13,8 +13,8 @@ const newsletter = require('./newsletter');
  * @param {integer} hours - Define the interval in hours for each update
  */
 module.exports = (hours) => {
-  cron.schedule('*/' + hours + ' * * * *', () => {
-  //cron.schedule('0 */' + hours + ' * * *', () => {
+  //cron.schedule('*/' + hours + ' * * * *', () => {
+  cron.schedule('0 */' + hours + ' * * *', () => {
     newsletter();
   });
 };
