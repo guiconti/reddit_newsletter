@@ -3,7 +3,6 @@ const fs = require('fs');
 const constants = require('../utils/constants');
 
 const DB_HOST = process.env.NODE_ENV == 'development'?process.env.DB_HOST:(process.env.DB_HOST_PREFIX + process.env.DB_HOST_USERNAME + ':' + process.env.DB_HOST_PASSWORD + process.env.DB_HOST_SUFFIX);
-
 // Connect to the database
 mongoose.connect(DB_HOST, {server:{auto_reconnect:true}});
 
@@ -16,7 +15,7 @@ db.on('error', function(err){
 
 // Connection ok log the success
 db.once('open', function callback(){
-  console.info('MongoDB connection is estsablished.');
+  console.info('MongoDB connection is established.');
   require('../controllers/startLoop')(constants.values.HOURS_TO_UPDATE);
 });
 

@@ -8,8 +8,6 @@ const newsletter = require('./newsletter');
 /**
  * Send posts update each n hours
  *
- * @param {string} subreddit - Subreddit name
- * @param {integer} chatId - Telegram chat id
  * @param {integer} hours - Define the interval in hours for each update
  */
 module.exports = (hours) => {
