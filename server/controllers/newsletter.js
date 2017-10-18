@@ -20,7 +20,7 @@ const sendPosts = require('./sendPosts');
  * @throws {Error} - Rejects the promise with an error message
  */
 module.exports = () => {
-  SubredditModel.find({}, 'name subscriptions')
+  SubredditModel.find({})
     .then((subreddits) => {
       subreddits.forEach((subreddit) => {
         getPosts(subreddit.name)
