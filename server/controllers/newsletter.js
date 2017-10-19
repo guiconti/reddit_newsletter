@@ -63,10 +63,10 @@ function getNewPosts(subredditInfo, newPosts) {
         if (subredditInfo.posts.findIndex((savedPost) => {
           return savedPost.id == post.id;
         }) == -1){
-          postsToSend.push(post);
+          postsToSend.push(post);c
+          subredditInfo.posts.push(post);
         }
       });
-      subredditInfo.posts.push(postsToSend);
       subredditInfo.save((err) => {
         if (err) {
           logger.error(err);
