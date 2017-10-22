@@ -10,13 +10,15 @@ Rollbar.info("Post published", {postId: 123});
  */
 
 const Rollbar = require('rollbar');
+console.log(process.env.ROLLBAR_KEY);
 const rollbar = new Rollbar({
   accessToken: process.env.ROLLBAR_KEY,
   handleUncaughtExceptions: true,
   handleUnhandledRejections: true,
   payload: {
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
+    name: 'Reddit Newsletter'
   }
 });
-rollbar.log('Hi!');
+
 module.exports = rollbar;
